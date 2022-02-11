@@ -6,7 +6,7 @@ const {
   getStudentByIdHandler,
   updateStudentHandler,
   deleteStudentHandler,
-} = require('./course.controller');
+} = require('./student.controller');
 
 // const { isAuthenticated, hasRole } = require('../../auth/auth.services');
 // hasRole(['user']),
