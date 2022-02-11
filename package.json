@@ -1,0 +1,41 @@
+{
+  "name": "u-dance-b",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mariana-Usuga/U-Dance-B.git"
+  },
+  "author": "Mariana Usuga",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mariana-Usuga/U-Dance-B/issues"
+  },
+  "homepage": "https://github.com/Mariana-Usuga/U-Dance-B#readme",
+  "devDependencies": {
+    "eslint": "^8.8.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^7.6.1",
+    "bcrypt": "^5.0.1",
+    "cloudinary": "^1.28.1",
+    "cors": "^2.8.5",
+    "dayjs": "^1.10.7",
+    "dotenv": "^16.0.0",
+    "epayco-sdk-node": "^1.1.0",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.2.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1"
+  }
+}
