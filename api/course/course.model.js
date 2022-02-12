@@ -16,7 +16,7 @@ const CourseSchema = new Schema({
     required: true,
   },
   image: String,
-  address: String,
+  place: String,
   rhythm: String,
 });
 
