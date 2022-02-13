@@ -6,17 +6,23 @@ const CourseSchema = new Schema({
   title: {
     type: String,
     required: true,
+    uppercase: true
   },
   description: {
     type: String,
     required: true,
+    uppercase: true
   },
   teacher: {
     type: String,
     required: true,
+    uppercase: true
   },
   image: String,
-  place: String,
+  place: {
+    type:String,
+    uppercase: true
+  },
   rhythm: String,
 });
 
