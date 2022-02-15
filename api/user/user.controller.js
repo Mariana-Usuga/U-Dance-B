@@ -7,7 +7,8 @@ const {
   updateUser,
 } = require('./user.service');
 
-const { sendEmail } = require('../../utils/email')
+const { signToken } = require('../../auth/auth.services')
+// const { sendEmail } = require('../../utils/email')
 
 async function getAllUsersHandler(req, res) {
   try {
@@ -29,23 +30,11 @@ async function createUserHandler(req, res) {
     if (!newUser.email) {
       return res.status(422).json({ response: 'Missing values in the body' });
     }
-    const hash = crypto.createHash('sha256').update(newUser.email).digest('hex');
-    newUser.emailResetToken = hash
     const user = await createUser(req.body);
 
-    const email = {
-      to: user.email,
-      subject: 'Activate your account',
-      template_id: 'd-b4cc409e05224c35ab445c9e52a9edbf',
-      dynamic_template_data:{
-        name: user.name,
-        url:'http://localhost:3000/active',
-        // url:'localhost:3000/active/' + newUser._id
-      }
-    }
+    const token = signToken(user.profile)
 
-    sendEmail(email)
-    return res.status(201).json(user);
+    return res.status(201).json({ JWT: token });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -71,10 +60,10 @@ async function updateUserHandler(req, res) {
   const { id } = req.params;
   try {
     const {
-      name, lastname, email, password, image
+      name, lastname, email, password, image, paymentId
     } = req.body;
 
-    if (!name && !lastname && !email && !password && !image) {
+    if (!name && !lastname && !email && !password && !image && !paymentId) {
       return res.status(422).json({ response: 'Missing values in the body' });
     }
 
@@ -116,3 +105,22 @@ module.exports = {
   updateUserHandler,
   deleteUserHandler,
 };
+
+ // const hash = crypto.createHash('sha256').update(newUser.email).digest('hex');
+    // newUser.emailResetToken = hash
+    // newUser.emailResetExpires = Date.now() + 3600000 * 24;
+
+    // const user = await createUser(req.body);
+
+    // const email = {
+    //   to: user.email,
+    //   subject: 'Activate your account',
+    //   template_id: 'd-b4cc409e05224c35ab445c9e52a9edbf',
+    //   dynamic_template_data:{
+    //     name: user.name,
+    //     // url:`http://localhost:3000/active${hash}`,
+    //     url:'localhost:3000/active/'
+    //   }
+    // }
+
+    // sendEmail(email)

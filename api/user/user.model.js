@@ -1,6 +1,44 @@
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
+const CreditCardSchema = new mongoose.Schema(
+  {
+    expMonth: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    expYear: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    mask: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    tokenId: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  { _id: false },
+);
+
+const BillingSchema = new mongoose.Schema(
+  {
+    creditCards: [CreditCardSchema],
+    customerId: String,
+  },
+  { _id: false },
+);
 
 const userSchema = new Schema({
   name: {
@@ -21,22 +59,31 @@ const userSchema = new Schema({
     required: true,
     default:'student'
   },
-  emailResetToken:{
-    type: String,
-  },
+  emailResetToken: String,
+  emailResetExpires: Date,
   image: String,
+  billing: BillingSchema,
+  paymentId: [
+    {
+      type: Array,
+      ref: 'Course',
+    },
+  ],
   courseId: [
     {
       type: Array,
       ref: 'Course',
     },
   ],
+},
+{
+  timestamps: true,
+},
+);
+
+userSchema.virtual('profile').get(function () {
+  const { email, _id, name } = this;
+  return { email, _id, name };
 });
-
-
-// student.Schema.virtual('profile').get(function () {
-//   const { email, _id, username } = this;
-//   return { email, _id, username };
-// });
 
 module.exports = mongoose.model('User', userSchema);
