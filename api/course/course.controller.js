@@ -6,6 +6,10 @@ const {
   updateCourse,
 } = require('./course.service');
 
+// const { getPaymentById } = require('../payment/payment.service')
+
+const Course = require('./course.model');
+
 async function getAllCoursesHandler(req, res) {
   try {
     const courses = await getAllCourses();
@@ -92,10 +96,29 @@ async function deleteCourseHandler(req, res) {
   }
 }
 
+async function updateCoursePaymentIdHandler(req, res){
+   // const { _id } = req.body
+  //  const { user } = req;
+   const { _idCourse, _idPayment } = req.body
+  //  console.log('user', user)
+   try{
+    const course = await getCourseById(_idCourse);
+    // const payment = await getPaymentById(_idPayment);
+
+     const updatedCourse = await Course.findByIdAndUpdate({_id: course._id},
+        { $push: { 'paymentId':  _idPayment } }, { upsert: true, new: true } )
+
+     return res.json(updatedCourse)
+   }catch(err){
+    console.log('err',err)
+   }
+}
+
 module.exports = {
   getAllCoursesHandler,
   createCourseHandler,
   getCourseByIdHandler,
   updateCourseHandler,
   deleteCourseHandler,
+  updateCoursePaymentIdHandler
 };

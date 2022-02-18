@@ -4,52 +4,53 @@ const epayco = require('epayco-sdk-node')({
   lang: 'ES',
   test: true,
 });
+const Payment = require('./payment.model');
 
-const { addBillingCards, addBillingCustomerId, } = require('../user/user.service')
+// const { addBillingCards, addBillingCustomerId, } = require('../user/user.service')
 
 const get = require('lodash/get');
 // const { log } = require('../../utils/logger');
 
-async function createCardToken(data, user) {
-  const { cardNumber, cardExpYear, cardExpMonth, cardCVC } = data;
+// async function createCardToken(data, user) {
+//   const { cardNumber, cardExpYear, cardExpMonth, cardCVC } = data;
 
-  const creditInfo = {
-    'card[number]': cardNumber,
-    'card[exp_year]': cardExpYear,
-    'card[exp_month]': cardExpMonth,
-    'card[cvc]': cardCVC,
-  };
+//   const creditInfo = {
+//     'card[number]': cardNumber,
+//     'card[exp_year]': cardExpYear,
+//     'card[exp_month]': cardExpMonth,
+//     'card[cvc]': cardCVC,
+//   };
 
-  try {
-    const { card, id } = await epayco.token.create(creditInfo);
-    const creditCard = {
-      expMonth: card.exp_month,
-      expYear: card.exp_year,
-      name: card.name,
-      mask: card.mask,
-      tokenId: id,
-    };
+//   try {
+//     const { card, id } = await epayco.token.create(creditInfo);
+//     const creditCard = {
+//       expMonth: card.exp_month,
+//       expYear: card.exp_year,
+//       name: card.name,
+//       mask: card.mask,
+//       tokenId: id,
+//     };
 
-    const updateUser = await addBillingCards(user, creditCard);
-    return updateUser
-  } catch (error) {
-    log.error('error', error)
-  }
-}
+//     const updateUser = await addBillingCards(user, creditCard);
+//     return updateUser
+//   } catch (error) {
+//     log.error('error', error)
+//   }
+// }
 
-async function createCustomer(user) {
+// async function createCustomer(user) {
 
-  const customerInfo = {
-    token_card: user?.billing?.creditCards?.[0]?.tokenId,
-    name: user.username,
-    email: user.email,
-    default: true,
-  };
-  const { data } = await epayco.customers.create(customerInfo);
+//   const customerInfo = {
+//     token_card: user?.billing?.creditCards?.[0]?.tokenId,
+//     name: user.username,
+//     email: user.email,
+//     default: true,
+//   };
+//   const { data } = await epayco.customers.create(customerInfo);
 
-  const cCustomer =  await addBillingCustomerId(user, data.customerId);
-  return cCustomer
-}
+//   const cCustomer =  await addBillingCustomerId(user, data.customerId);
+//   return cCustomer
+// }
 
 async function makePayment(user, payment) {
   const defaultTokenId = get(user, 'billing.creditCards[0].tokenId');
@@ -81,8 +82,18 @@ async function makePayment(user, payment) {
   return await epayco.charge.create(paymentInfo);
 }
 
+async function getPaymentById(id) {
+  try {
+    const payment = await Payment.findById(id);
+    return payment;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
-  createCardToken,
-  createCustomer,
+  // createCardToken,
+  // createCustomer,
   makePayment,
+  getPaymentById
 };

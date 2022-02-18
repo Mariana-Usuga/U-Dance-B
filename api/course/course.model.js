@@ -19,11 +19,17 @@ const CourseSchema = new Schema({
     uppercase: true
   },
   image: String,
+  price: String,
   place: {
     type:String,
     uppercase: true
   },
   rhythm: String,
+  paymentId:
+    {
+      type: Array,
+      ref: 'Payment',
+    },
 });
 
 module.exports = mongoose.model('Course', CourseSchema);

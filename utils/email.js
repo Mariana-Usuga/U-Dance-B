@@ -17,9 +17,8 @@ async function sendEmail(data){
   try{
     const response = await sgMail.send(msg);
     console.log(response[0].statusCode);
-    console.log(response[0].headers)
+    // console.log(response[0].headers)
   }catch(error){
-    console.log('entra en error')
     console.error('error'. error)
   }
 }

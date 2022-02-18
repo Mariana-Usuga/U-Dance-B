@@ -1,14 +1,19 @@
 const cron = require('node-cron');
 const fs = require('fs');
+const { everyDayHandler } = require('../api/user/user.service')
 
-// cron.schedule('* * * * *', function() {
-//   console.log('running a task every minute');
+// cron.schedule('* * * * * *', function() {
+  // console.log('running a task every minute');
+  // everyDayHandler()
 // });
 
-var today  = new Date();
+// const today = new Date()
 
-console.log(today.toLocaleDateString("en-US"));
-console.log('day', today.getDay())
+// everyDayHandler()
+
+
+  // console.log('today', today, 'day', today.getDate())
+
 // 0 0 0 1-31 * *(cada 24 h)
 
 // cron.schedule('2 0 * * *', function() {

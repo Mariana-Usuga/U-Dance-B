@@ -53,6 +53,7 @@ const userSchema = new Schema({
   email:{
     type: String,
     required: true,
+    // unique: true,
   },
   role:{
     type:String,
@@ -63,18 +64,16 @@ const userSchema = new Schema({
   emailResetExpires: Date,
   image: String,
   billing: BillingSchema,
-  paymentId: [
+  paymentId:
+    {
+      type: Array,
+      ref: 'Payment',
+    },
+  courseId:
     {
       type: Array,
       ref: 'Course',
     },
-  ],
-  courseId: [
-    {
-      type: Array,
-      ref: 'Course',
-    },
-  ],
 },
 {
   timestamps: true,

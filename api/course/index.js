@@ -6,16 +6,19 @@ const {
   getCourseByIdHandler,
   updateCourseHandler,
   deleteCourseHandler,
+  updateCoursePaymentIdHandler
 } = require('./course.controller');
 
+const { isAuthenticated } = require('../../auth/auth.services');
 // const { isAuthenticated, hasRole } = require('../../auth/auth.services');
 // hasRole(['user']),
-
 const router = Router();
 
 router.get('/', getAllCoursesHandler);
 
 router.post('/', createCourseHandler);
+
+router.post('/updatePaymentId', isAuthenticated, updateCoursePaymentIdHandler);
 
 router.get('/:id', getCourseByIdHandler);
 

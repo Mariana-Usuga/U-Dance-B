@@ -6,14 +6,23 @@ const {
   getUserByIdHandler,
   updateUserHandler,
   deleteUserHandler,
+  updateUserCourseIdHandler,
+  updateUserPaymentIdHandler,
 } = require('./user.controller');
-
+const { everyDayHandler } = require('./user.service');
+const { isAuthenticated } = require('../../auth/auth.services')
 // const { isAuthenticated, hasRole } = require('../../auth/auth.services');
 // hasRole(['user']),
 
 const router = Router();
 
 router.get('/', getAllUsersHandler);
+
+router.get('/everyDay', everyDayHandler);
+
+router.post('/updateCourseId/:id', isAuthenticated, updateUserCourseIdHandler);
+
+router.post('/updatePaymentId/:id', isAuthenticated, updateUserPaymentIdHandler);
 
 router.post('/', createUserHandler);
 

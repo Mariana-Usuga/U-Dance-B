@@ -1,11 +1,14 @@
 const get = require('lodash/get');
 const User = require('./user.model');
-// const { sendEmail } = require('../../utils/email')
+const { sendEmail } = require('../../utils/email')
+const cron = require('node-cron');
+
+const { getPaymentById } =require('../payment/payment.service')
 
 async function getAllUsers() {
   try {
-    const user = await User.find();
-    return user;
+    const users = await User.find();
+    return users;
   } catch (error) {
     console.log('error', error);
     throw error;
@@ -98,6 +101,38 @@ async function findOneUser(query) {
   return user;
 }
 
+async function everyDayHandler(res, req){
+
+  const every2Day = async () => {
+    const users = await getAllUsers()
+    const today = new Date()
+
+  for(const user of users){
+    for(const payId of user.paymentId){
+      const pay = await getPaymentById(payId)
+      const { paymentDate } = pay
+      if(paymentDate === today.getDate()){
+        const email = {
+          to: user.email,
+          subject: 'Remember your payment',
+          template_id: 'd-b4cc409e05224c35ab445c9e52a9edbf',
+          dynamic_template_data: {
+            name: user.name,
+            url: 'http://localhost:3000/pages/pay'
+          }
+        }
+        sendEmail(email)
+      }
+    }
+  }
+  }
+cron.schedule('* * * * *', function() { //* * * * * = 1 minute
+  every2Day()
+})
+}
+
+// everyDayHandler()
+
 // async function ValidateUserEmail(email) {
 //   try {
 //     const isMatch = await User.findOne({ email });
@@ -131,6 +166,7 @@ module.exports = {
   addBillingCards,
   addBillingCustomerId,
   findOneUser,
+  everyDayHandler
   // ValidateUserEmail,
   // ValidateUserName,
 };

@@ -8,6 +8,7 @@ const {
 } = require('./user.service');
 
 const { signToken } = require('../../auth/auth.services')
+const User = require('./user.model');
 // const { sendEmail } = require('../../utils/email')
 
 async function getAllUsersHandler(req, res) {
@@ -98,12 +99,40 @@ async function deleteUserHandler(req, res) {
   }
 }
 
+async function updateUserCourseIdHandler(req, res) {
+  const { user } = req;
+  const { id } = req.params;
+  try{
+    const updatedUser = await User.findByIdAndUpdate({_id: user._id},
+       { $push: { 'courseId':  id  } }, { upsert: true, new: true } )
+
+    return res.json(updatedUser)
+  }catch(err){
+    console.log('err',err)
+  }
+}
+
+async function updateUserPaymentIdHandler(req, res) {
+  const { user } = req;
+  const { id } = req.params;
+  try{
+    const updatedUser = await User.findByIdAndUpdate({_id: user._id},
+       { $push: { 'paymentId':  id  } }, { upsert: true, new: true } )
+
+    return res.json(updatedUser)
+  }catch(err){
+    console.log('err',err)
+  }
+}
+
 module.exports = {
   getAllUsersHandler,
   createUserHandler,
   getUserByIdHandler,
   updateUserHandler,
   deleteUserHandler,
+  updateUserCourseIdHandler,
+  updateUserPaymentIdHandler
 };
 
  // const hash = crypto.createHash('sha256').update(newUser.email).digest('hex');
