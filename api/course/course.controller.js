@@ -4,6 +4,7 @@ const {
   deleteCourse,
   getCourseById,
   updateCourse,
+  getCoursesByRhythm
 } = require('./course.service');
 
 // const { getPaymentById } = require('../payment/payment.service')
@@ -20,6 +21,16 @@ async function getAllCoursesHandler(req, res) {
 
     return res.status(200).json(courses);
   } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+async function getAllCoursesByRhythmHandler (req, res) {
+  const { rhythm } = req.params;
+  try{
+    const courses = await getCoursesByRhythm(rhythm);
+    return res.status(200).json(courses);
+  }catch(error){
     return res.status(500).json({ error: error.message });
   }
 }
@@ -120,5 +131,6 @@ module.exports = {
   getCourseByIdHandler,
   updateCourseHandler,
   deleteCourseHandler,
-  updateCoursePaymentIdHandler
+  updateCoursePaymentIdHandler,
+  getAllCoursesByRhythmHandler
 };

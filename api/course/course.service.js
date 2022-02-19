@@ -2,11 +2,20 @@ const Course = require('./course.model');
 
 async function getAllCourses() {
   try {
-    const markets = await Course.find();
-    return markets;
+    const courses = await Course.find();
+    return courses;
   } catch (error) {
     console.log('error', error);
     throw error;
+  }
+}
+
+async function getCoursesByRhythm(rhythm) {
+  try{
+    const course = await Course.find({'rhythm': rhythm})
+    return course
+  }catch(err){
+    throw err
   }
 }
 
@@ -55,4 +64,5 @@ module.exports = {
   createCourse,
   updateCourse,
   deleteCourse,
+  getCoursesByRhythm
 };
