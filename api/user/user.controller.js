@@ -5,6 +5,7 @@ const {
   deleteUser,
   getUserById,
   updateUser,
+  getUserByEmail
 } = require('./user.service');
 
 const { signToken } = require('../../auth/auth.services')
@@ -27,9 +28,14 @@ async function getAllUsersHandler(req, res) {
 
 async function createUserHandler(req, res) {
   const newUser = req.body
+
   try {
     if (!newUser.email) {
       return res.status(422).json({ response: 'Missing values in the body' });
+    }
+    const userByEmail = await getUserByEmail(newUser.email);
+    if(userByEmail){
+      return res.status(409).json({ response: 'User already exists' });
     }
     const user = await createUser(req.body);
 
@@ -125,6 +131,18 @@ async function updateUserPaymentIdHandler(req, res) {
   }
 }
 
+async function getUserMeHandler(req, res) {
+  try {
+    return res.status(200).json(req.user);
+  } catch (error) {
+    console.log(
+      '🚀 ~ file: user.controller.js ~ line 142 ~ getUserMeHandler ~ error',
+      error,
+    );
+    return res.status(400).json({ error: error.message });
+  }
+}
+
 module.exports = {
   getAllUsersHandler,
   createUserHandler,
@@ -132,7 +150,8 @@ module.exports = {
   updateUserHandler,
   deleteUserHandler,
   updateUserCourseIdHandler,
-  updateUserPaymentIdHandler
+  updateUserPaymentIdHandler,
+  getUserMeHandler
 };
 
  // const hash = crypto.createHash('sha256').update(newUser.email).digest('hex');

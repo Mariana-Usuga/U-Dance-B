@@ -8,6 +8,7 @@ const {
   deleteUserHandler,
   updateUserCourseIdHandler,
   updateUserPaymentIdHandler,
+  getUserMeHandler
 } = require('./user.controller');
 const { everyDayHandler } = require('./user.service');
 const { isAuthenticated } = require('../../auth/auth.services')
@@ -19,6 +20,8 @@ const router = Router();
 router.get('/', getAllUsersHandler);
 
 router.get('/everyDay', everyDayHandler);
+
+router.get('/me', isAuthenticated, getUserMeHandler);
 
 router.post('/updateCourseId/:id', isAuthenticated, updateUserCourseIdHandler);
 

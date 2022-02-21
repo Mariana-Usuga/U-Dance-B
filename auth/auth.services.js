@@ -36,6 +36,7 @@ async function isAuthenticated(req, res, next) {
         return res.status(401).json({message: 'Unauthorized'}).end();
       }
     } catch (error) {
+      console.log('entra en error en auth')
       return next(error);
     }
   // );

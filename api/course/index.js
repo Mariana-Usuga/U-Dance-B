@@ -7,7 +7,8 @@ const {
   updateCourseHandler,
   deleteCourseHandler,
   updateCoursePaymentIdHandler,
-  getAllCoursesByRhythmHandler
+  getAllCoursesByRhythmHandler,
+  getAllCoursesByUserHandler
 } = require('./course.controller');
 
 const { isAuthenticated } = require('../../auth/auth.services');
@@ -17,9 +18,11 @@ const router = Router();
 
 router.get('/', getAllCoursesHandler);
 
+router.get('/coursesByUser', isAuthenticated, getAllCoursesByUserHandler);
+
 router.get('/:rhythm', getAllCoursesByRhythmHandler);
 
-router.post('/', createCourseHandler);
+router.post('/', isAuthenticated, createCourseHandler);
 
 router.post('/updatePaymentId', isAuthenticated, updateCoursePaymentIdHandler);
 
@@ -27,6 +30,6 @@ router.get('/:id', getCourseByIdHandler);
 
 router.patch('/:id', updateCourseHandler);
 
-router.delete('/:id', deleteCourseHandler);
+router.delete('/:id', isAuthenticated, deleteCourseHandler);
 
 module.exports = router;
