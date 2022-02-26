@@ -20,7 +20,7 @@ router.get('/', getAllCoursesHandler);
 
 router.get('/coursesByUser', isAuthenticated, getAllCoursesByUserHandler);
 
-router.get('/:rhythm', getAllCoursesByRhythmHandler);
+router.get('/rhythm/:rhythm', getAllCoursesByRhythmHandler);
 
 router.post('/', isAuthenticated, createCourseHandler);
 

@@ -6,51 +6,64 @@ const epayco = require('epayco-sdk-node')({
 });
 const Payment = require('./payment.model');
 
-// const { addBillingCards, addBillingCustomerId, } = require('../user/user.service')
+const { addBillingCards, addBillingCustomerId, } = require('../user/user.service')
 
 const get = require('lodash/get');
 // const { log } = require('../../utils/logger');
 
-// async function createCardToken(data, user) {
-//   const { cardNumber, cardExpYear, cardExpMonth, cardCVC } = data;
+async function createCardToken(data, user) {
+  const { cardNumber, cardExpYear, cardExpMonth, cardCVC } = data;
+  console.log('user in card token', user)
+  console.log('data', data)
 
-//   const creditInfo = {
-//     'card[number]': cardNumber,
-//     'card[exp_year]': cardExpYear,
-//     'card[exp_month]': cardExpMonth,
-//     'card[cvc]': cardCVC,
-//   };
+  const creditInfo = {
+    'card[number]': cardNumber,
+    'card[exp_year]': cardExpYear,
+    'card[exp_month]': cardExpMonth,
+    'card[cvc]': cardCVC,
+  };
+console.log('credi info', creditInfo)
+  try {
+    const { card, id } = await epayco.token.create(creditInfo);
+    console.log('card in token', card, 'id', id)
 
-//   try {
-//     const { card, id } = await epayco.token.create(creditInfo);
-//     const creditCard = {
-//       expMonth: card.exp_month,
-//       expYear: card.exp_year,
-//       name: card.name,
-//       mask: card.mask,
-//       tokenId: id,
-//     };
+    const creditCard = {
+      expMonth: card.exp_month,
+      expYear: card.exp_year,
+      name: card.name,
+      mask: card.mask,
+      tokenId: id,
+    };
 
-//     const updateUser = await addBillingCards(user, creditCard);
-//     return updateUser
-//   } catch (error) {
-//     log.error('error', error)
-//   }
-// }
+console.log('credit info', creditCard, 'user', user)
+    const updateUser = await addBillingCards(user, creditCard);
+console.log('uod in card token', updateUser)
 
-// async function createCustomer(user) {
+    return updateUser
+  } catch (error) {
+    console.log('entr en error in token')
+    log.error('error', error)
+  }
+}
 
-//   const customerInfo = {
-//     token_card: user?.billing?.creditCards?.[0]?.tokenId,
-//     name: user.username,
-//     email: user.email,
-//     default: true,
-//   };
-//   const { data } = await epayco.customers.create(customerInfo);
+async function createCustomer(user) {
+  console.log('entra en create Customer')
+try{
+  const customerInfo = {
+    token_card: user?.billing?.creditCards?.[0]?.tokenId,
+    name: user.username,
+    email: user.email,
+    default: true,
+  };
+console.log('customerInfo in createCustomer', customerInfo)
+  const { data } = await epayco.customers.create(customerInfo);
 
-//   const cCustomer =  await addBillingCustomerId(user, data.customerId);
-//   return cCustomer
-// }
+  const cCustomer =  await addBillingCustomerId(user, data.customerId);
+  return cCustomer
+}catch(err){
+  console.log('entra en err customer')
+}
+}
 
 async function makePayment(user, payment) {
   const defaultTokenId = get(user, 'billing.creditCards[0].tokenId');
@@ -92,8 +105,8 @@ async function getPaymentById(id) {
 }
 
 module.exports = {
-  // createCardToken,
-  // createCustomer,
+  createCardToken,
+  createCustomer,
   makePayment,
   getPaymentById
 };

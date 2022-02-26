@@ -11,18 +11,21 @@ const User = require('../user/user.model');
 // const { updateUser } = require('../user/user.service')
 
 async function makePaymentHandlers(req, res) {
-
+// console.log('entra en pay')
   try {
     const { user, body: payment } = req;
-
+console.log('user', user, 'body', payment)
     let userData = user
       if(!user?.billing?.creditCards?.[0]?.tokenId){
         const createToken = await createCardToken(payment, user)
+        console.log('token car', createToken)
         const customer = await createCustomer(createToken)
+        console.log('customer', customer)
         userData = customer
       }
 
       const { data, success } = await makePayment(userData, payment);
+      console.log('data', data)
 
       if (!success) {
       return res.status(400).json(data);
@@ -45,6 +48,7 @@ async function makePaymentHandlers(req, res) {
 
     return res.status(200).json({ success, data });
   } catch (error) {
+    console.log('err in handler')
     res.status(500).send({
       message: 'Error realizando el pago',
       error,

@@ -30,6 +30,7 @@ async function createCourse(course) {
 }
 
 async function getCourseById(id) {
+  console.log('entra en service')
   try {
     const course = await Course.findById(id);
     return course;

@@ -7,7 +7,7 @@ const payment = require('./api/payment');
 function routes(app) {
    app.use('/api/course', course);
    app.use('/api/user', user);
-   app.use('/api/payments', payment);
+   app.use('/api/payment', payment);
    app.use('/api/upload', upload)
   //  app.use('/auth/local', authLocal);
 }

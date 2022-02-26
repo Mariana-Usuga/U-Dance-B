@@ -19,7 +19,7 @@ const router = Router();
 
 router.get('/', getAllUsersHandler);
 
-router.get('/everyDay', everyDayHandler);
+// router.get('/everyDay', everyDayHandler);
 
 router.get('/me', isAuthenticated, getUserMeHandler);
 

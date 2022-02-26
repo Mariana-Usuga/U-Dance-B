@@ -1,9 +1,9 @@
 const get = require('lodash/get');
 const User = require('./user.model');
-const { sendEmail } = require('../../utils/email')
+// const { sendEmail } = require('../../utils/email')
 const cron = require('node-cron');
 
-const { getPaymentById } =require('../payment/payment.service')
+// const { getPaymentById } =require('../payment/payment.service')
 
 async function getAllUsers() {
   try {
@@ -65,18 +65,24 @@ async function getUserByEmail(email){
 }
 
 async function addBillingCards(user, card) {
-  const creditCards = get(user, 'billing.creditCards', []);
-  const customer = {
-    billing: {
-      creditCards: creditCards.concat(card),
-    },
-  };
+  // console.log('entra en add billing cards', user, 'card', card)
+  try{
+    const creditCards = get(user, 'billing.creditCards', []);
+    const customer = {
+      billing: {
+        creditCards: creditCards.concat(card),
+      },
+    };
+  // console.log('customer', customer)
 
-  const updatedUser = await User.findByIdAndUpdate(user._id, customer, {
-    new: true,
-  });
-
-  return updatedUser;
+    const updatedUser = await User.findByIdAndUpdate(user._id, customer, {
+      new: true,
+    });
+// console.log('upda', updatedUser)
+    return updatedUser;
+  }catch(err){
+    console.log('err in add bil cards', err)
+  }
 }
 
 async function addBillingCustomerId(user, customerId) {
@@ -88,7 +94,7 @@ async function addBillingCustomerId(user, customerId) {
       customerId,
     },
   };
-
+// console.log('customer in add billings', customer)
   const updatedUser = await User.findByIdAndUpdate(user._id, customer, {
     new: true,
   });
@@ -101,35 +107,35 @@ async function findOneUser(query) {
   return user;
 }
 
-async function everyDayHandler(res, req){
+// async function everyDayHandler(res, req){
 
-  const every2Day = async () => {
-    const users = await getAllUsers()
-    const today = new Date()
+//   const every2Day = async () => {
+//     const users = await getAllUsers()
+//     const today = new Date()
 
-  for(const user of users){
-    for(const payId of user.paymentId){
-      const pay = await getPaymentById(payId)
-      const { paymentDate } = pay
-      if(paymentDate === today.getDate()){
-        const email = {
-          to: user.email,
-          subject: 'Remember your payment',
-          template_id: 'd-b4cc409e05224c35ab445c9e52a9edbf',
-          dynamic_template_data: {
-            name: user.name,
-            url: 'http://localhost:3000/pages/pay'
-          }
-        }
-        sendEmail(email)
-      }
-    }
-  }
-  }
-cron.schedule('* * * * *', function() { //* * * * * = 1 minute
-  every2Day()
-})
-}
+//   for(const user of users){
+//     for(const payId of user.paymentId){
+//       const pay = await getPaymentById(payId)
+//       const { paymentDate } = pay
+//       if(paymentDate === today.getDate()){
+//         const email = {
+//           to: user.email,
+//           subject: 'Remember your payment',
+//           template_id: 'd-b4cc409e05224c35ab445c9e52a9edbf',
+//           dynamic_template_data: {
+//             name: user.name,
+//             url: 'http://localhost:3000/pages/pay'
+//           }
+//         }
+//         sendEmail(email)
+//       }
+//     }
+//   }
+//   }
+// cron.schedule('* * * * *', function() { //* * * * * = 1 minute
+//   every2Day()
+// })
+// }
 
 // everyDayHandler()
 
@@ -166,7 +172,7 @@ module.exports = {
   addBillingCards,
   addBillingCustomerId,
   findOneUser,
-  everyDayHandler
+  // everyDayHandler
   // ValidateUserEmail,
   // ValidateUserName,
 };

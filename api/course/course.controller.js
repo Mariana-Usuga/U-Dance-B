@@ -29,26 +29,26 @@ async function getAllCoursesHandler(req, res) {
   }
 }
 
-async function getAllCoursesByUserHandler (req, res) {
-const courses = []
-  try{
+async function getAllCoursesByUserHandler(req, res) {
+  const courses = []
+  try {
     const coursesReq = req.user.courseId
-    for(const item of coursesReq ){
+    for (const item of coursesReq) {
       const course = await getCourseById(item);
       courses.push(course)
     }
     return res.status(200).json(courses);
-  }catch(err){
+  } catch (err) {
     return res.status(500).json({ error: error.message });
   }
 }
 
-async function getAllCoursesByRhythmHandler (req, res) {
+async function getAllCoursesByRhythmHandler(req, res) {
   const { rhythm } = req.params;
-  try{
+  try {
     const courses = await getCoursesByRhythm(rhythm);
     return res.status(200).json(courses);
-  }catch(error){
+  } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 }
@@ -63,7 +63,7 @@ async function createCourseHandler(req, res) {
     const course = await createCourse(req.body);
 
     const courseNew = {
-      courseId : [...req.user.courseId, course._id]
+      courseId: [...req.user.courseId, course._id]
     }
     const update = await updateUser(_id, courseNew)
 
@@ -74,13 +74,15 @@ async function createCourseHandler(req, res) {
 }
 
 async function getCourseByIdHandler(req, res) {
+  console.log('entre')
   const { id } = req.params;
   try {
     const course = await getCourseById(id);
+    console.log('course', course)
     if (!course) {
       return res
         .status(404)
-        .json({ message: `product not found with id: ${id}` });
+        .json({ message: `course not found with id: ${id}` });
     }
 
     return res.status(200).json(course);
@@ -116,49 +118,46 @@ async function updateCourseHandler(req, res) {
 
 async function deleteCourseHandler(req, res) {
   const { id } = req.params;
-  // const { _id } = req.user
+
   try {
     const course = await getCourseById(id);
-    console.log('despues de couget')
-console.log('course id', course, 'id')
 
-if (!course) {
+    if (!course) {
       return res
         .status(404)
         .json({ message: `course not found with id: ${id}` });
     }
 
-    const updateuser = await User.updateOne({ _id: req.user._id }, {
+    await User.updateOne({ _id: req.user._id }, {
       $pull: {
         courseId: course._id,
       },
-  }, { new: true });
+    }, { new: true });
 
-console.log('up', updateuser)
- await deleteCourse(id);
+   await deleteCourse(id);
 
-    return res.status(200);
+    return res.status(200)
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 }
 
-async function updateCoursePaymentIdHandler(req, res){
-   // const { _id } = req.body
+async function updateCoursePaymentIdHandler(req, res) {
+  // const { _id } = req.body
   //  const { user } = req;
-   const { _idCourse, _idPayment } = req.body
+  const { _idCourse, _idPayment } = req.body
   //  console.log('user', user)
-   try{
+  try {
     const course = await getCourseById(_idCourse);
     // const payment = await getPaymentById(_idPayment);
 
-     const updatedCourse = await Course.findByIdAndUpdate({_id: course._id},
-        { $push: { 'paymentId':  _idPayment } }, { upsert: true, new: true } )
+    const updatedCourse = await Course.findByIdAndUpdate({ _id: course._id },
+      { $push: { 'paymentId': _idPayment } }, { upsert: true, new: true })
 
-     return res.json(updatedCourse)
-   }catch(err){
-    console.log('err',err)
-   }
+    return res.json(updatedCourse)
+  } catch (err) {
+    console.log('err', err)
+  }
 }
 
 module.exports = {
